@@ -7,7 +7,7 @@ using System.Linq;
 namespace Projeto.Asp.Api.Controllers
 {
     [ApiController]
-    public class MainController : ControllerBase
+    public abstract class MainController : ControllerBase
     {
         
         private bool _haveErrors { get; set; }
