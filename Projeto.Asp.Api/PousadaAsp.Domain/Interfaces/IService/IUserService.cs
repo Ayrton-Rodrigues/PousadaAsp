@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Projeto.Asp.Api.PousadaAsp.Domain.Interfaces.IService
 {
-    public interface IUserService : IService<UserViewModel, Guid>
+    public interface IUserService : IService<UserViewModel>
     {
     }
 }

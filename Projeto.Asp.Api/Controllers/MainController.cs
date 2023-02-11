@@ -9,9 +9,10 @@ namespace Projeto.Asp.Api.Controllers
     [ApiController]
     public abstract class MainController : ControllerBase
     {
-        
-        private bool _haveErrors { get; set; }
-        private List<string> _errorsMessage = new List<string>();
+   
+
+        private bool _hasErrors { get; set; }
+        private readonly List<string> _errorsMessage = new List<string>();
 
         protected ActionResult CustomResponse(ModelStateDictionary model)
         {
@@ -23,7 +24,7 @@ namespace Projeto.Asp.Api.Controllers
         protected ActionResult CustomResponse(object obj = null)
         {
             
-            if(_haveErrors)
+            if(_hasErrors)
             {
                 return BadRequest(new {
                     success = false,
@@ -45,15 +46,15 @@ namespace Projeto.Asp.Api.Controllers
             var errors = model.Values.SelectMany(x => x.Errors);
             if (errors.Count() > 0)
             {
-                foreach(var erro in errors)
+                foreach(var error in errors)
                 {
-                    var errorMessage = erro.Exception == null ? erro.ErrorMessage : erro.Exception.Message;
-                    _errorsMessage.Add(erro.ErrorMessage);
+                    var errorMessage = error.Exception == null ? error.ErrorMessage : error.Exception.Message;
+                    _errorsMessage.Add(error.ErrorMessage);
                 }
-                return _haveErrors = true;
+                return _hasErrors = true;
             }
 
-            return _haveErrors = false;
+            return _hasErrors = false;
 
         }
     }

@@ -10,7 +10,7 @@ namespace Projeto.Asp.Api.PousadaAsp.Data.Mapping
         {
             builder.HasKey(u => u.Id);
             
-            builder.Property(u => u.Name)
+            builder.Property(u => u.Nome)
                 .IsRequired()
                 .HasColumnType("varchar(80)");
             
@@ -22,7 +22,7 @@ namespace Projeto.Asp.Api.PousadaAsp.Data.Mapping
                 .IsRequired()
                 .HasColumnType("char(8)");     
             
-            builder.ToTable("USERS");
+            builder.ToTable("User");
         }
 
 
