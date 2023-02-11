@@ -36,6 +36,7 @@ namespace Projeto.Asp.Api.PousadaAsp.Data.Repository
 
         public virtual async Task Update(TEntity obj)
         {
+            _context.Entry(obj).State = EntityState.Modified;
             _dbSet.Update(obj);
             await SaveChanges();
         }
