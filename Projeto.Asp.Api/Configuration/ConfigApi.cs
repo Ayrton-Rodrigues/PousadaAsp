@@ -6,7 +6,7 @@ using Projeto.Asp.Api.PousadaAsp.Data.Context;
 
 namespace Projeto.Asp.Api.Configuration
 {
-    public static class ConfigurationApi
+    public static class ConfigApi
     {
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
         {
