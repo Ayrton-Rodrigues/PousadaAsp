@@ -6,6 +6,7 @@ using Projeto.Asp.Api.PousadaAsp.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 {
@@ -26,16 +27,24 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
             return _mapper.Map<IEnumerable<UserViewModel>>(users);
         }
 
-        public async Task<UserViewModel> GetById(Guid id)
+        
+        public async Task<UserViewModel> GetByDocument(string cpf)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetByDocument(cpf);
             return _mapper.Map<UserViewModel>(user);
         }
-        public async Task Add(UserViewModel entity)
+
+        public async Task<bool> Add(UserViewModel entity)
         {
-            var user = _mapper.Map<User>(entity);
-            await _userRepository.Add(user);
-       
+
+            var user = await GetByDocument(entity.Cpf);
+            if (user != null) return false;
+            
+            var newUser = _mapper.Map<User>(entity);
+            await _userRepository.Add(newUser);              
+            
+
+            return true;
         }
         public async Task Update(UserViewModel entity)
         {

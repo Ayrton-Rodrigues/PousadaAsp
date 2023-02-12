@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Projeto.Asp.Api.PousadaAsp.Data.Context;
 using Projeto.Asp.Api.PousadaAsp.Domain.Interfaces.IService;
 using Projeto.Asp.Api.PousadaAsp.Domain.Services;
 using Projeto.Asp.Api.PousadaAsp.Domain.ViewModels;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,24 +19,25 @@ namespace Projeto.Asp.Api.Controllers
     public class LoginController : MainController
     {
 
-        private readonly UserService _userService;
-       
+        private readonly IUserService _userService;
 
         public LoginController(UserService service)
         {
             _userService = service;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<UserViewModel>> Register()
+        [HttpPost("register")]
+        public async Task<ActionResult> Register(UserViewModel register)
         {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            //if (!ModelState.IsValid) return CustomResponse(ModelState);
+            await _userService.Add(register);
 
-            var users = await _userService.GetAll();
-
-            return CustomResponse(users);
+            register.Password = "";
+            
+            return CustomResponse(register);
         }
+
 
 
     }

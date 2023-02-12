@@ -8,30 +8,31 @@ using System.Threading.Tasks;
 
 namespace Projeto.Asp.Api.PousadaAsp.Data.Repository
 {
-    public class BaseRepository<TEntity, K> : IRepository<TEntity, K> where TEntity : BaseEntity, new()
+    public class BaseRepository<TEntity, K> : IRepository<TEntity> where TEntity : BaseEntity, new()
     {
-        private readonly PousadaAspDbContext _context;
-        private readonly DbSet<TEntity> _dbSet;
+        protected readonly PousadaAspDbContext _context;
+        protected readonly DbSet<TEntity> _dbSet;
 
         public BaseRepository(PousadaAspDbContext db)
         {
             _context = db;
             _dbSet = _context.Set<TEntity>();
         }
+   
 
         public virtual async Task<IEnumerable<TEntity>> GetAll()
         {
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public virtual async Task<TEntity> GetById(K id)
+        public virtual async Task<TEntity> GetByDocument(string cpf)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet.FindAsync();
         }
         public virtual async Task Add(TEntity obj)
         {
             _dbSet.Add(obj);            
-            await SaveChanges();
+             await SaveChanges();
         }
 
         public virtual async Task Update(TEntity obj)
