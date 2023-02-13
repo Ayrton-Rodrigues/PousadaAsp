@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DevIO.Api.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Projeto.Asp.Api.PousadaAsp.Data.Context;
 using Projeto.Asp.Api.PousadaAsp.Data.Repository;
@@ -29,9 +30,10 @@ namespace Projeto.Asp.Api.Configuration
             //services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
 
             //Services
+            services.AddScoped<LoginService>();
             services.AddTransient<UserService>();
+            services.AddTransient<JwtSettings>();
 
-            
             return services;
         }
     }

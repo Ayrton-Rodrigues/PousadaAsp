@@ -16,6 +16,8 @@ namespace Projeto.Asp.Api.PousadaAsp.Data.Repository
         {
             return await _context.User.FirstOrDefaultAsync(u => u.Cpf == cpf);
         }
+
+        
     }
 
 }
