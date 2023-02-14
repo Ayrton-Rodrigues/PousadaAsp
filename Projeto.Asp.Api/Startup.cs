@@ -40,18 +40,23 @@ namespace Projeto.Asp.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            
             app.UseAuthentication();
+            
             
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<JwtMiddleware>();
+            
             app.UseRouting();
-
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
             var claims = new List<Claim>();
             
 
-            claims.Add(new Claim(ClaimTypes.Name, user.Nome));
+            claims.Add(new Claim("info", user.Nome));
             claims.Add(new Claim("Info", user.Cpf));
             claims.Add(new Claim("Info", user.Email));
             claims.Add(new Claim("role", user.RolesId.ToString()));

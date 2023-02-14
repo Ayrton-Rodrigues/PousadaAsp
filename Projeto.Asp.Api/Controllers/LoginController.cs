@@ -30,7 +30,7 @@ namespace Projeto.Asp.Api.Controllers
             _userService = service;
             _loginService = loginService;
         }
-        [Authorize]
+
         [HttpGet("users")]
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetAllUsers()
         {
