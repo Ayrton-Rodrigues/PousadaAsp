@@ -41,16 +41,19 @@ namespace Projeto.Asp.Api
             }
 
             
-            app.UseAuthentication();
             
             
             app.UseHttpsRedirection();
 
-            app.UseMiddleware<JwtMiddleware>();
             
             app.UseRouting();
             
+            
+            app.UseAuthentication();
             app.UseAuthorization();
+            
+            
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

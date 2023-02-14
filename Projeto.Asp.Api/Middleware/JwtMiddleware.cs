@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
 using DevIO.Api.Extensions;
@@ -10,6 +11,12 @@ public class JwtMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly JwtSettings _jwtSettings;
+    private readonly List<string> _allowedRoutes = new List<string>
+    {
+        "/api/Login",
+        "/api/Login/users",
+
+    };
 
     public JwtMiddleware(IOptions<JwtSettings> jwtSettings, RequestDelegate next)
     {
@@ -20,11 +27,12 @@ public class JwtMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
 
-        if (context.Request.Path == "/api/Login")
+        if (_allowedRoutes.Contains(context.Request.Path))
         {
             await _next(context);
             return;
         }
+
 
 
         var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");

@@ -31,6 +31,7 @@ namespace Projeto.Asp.Api.Controllers
             _loginService = loginService;
         }
 
+        [AllowAnonymous]
         [HttpGet("users")]
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetAllUsers()
         {
