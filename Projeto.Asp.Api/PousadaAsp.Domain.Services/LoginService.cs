@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using Projeto.Asp.Api.PousadaAsp.Domain.Enums;
 using Microsoft.Extensions.Options;
+using System.Security.Cryptography;
+using Projeto.Asp.Api.PousadaAsp.Domain.Entity;
 
 namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 {
@@ -20,29 +22,42 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
 
         private readonly JwtSettings _jwtSettings;
+        private readonly IUserRepository _userRepo;
 
-        public LoginService(IOptions<JwtSettings> jwtSettings)
+        public LoginService(IOptions<JwtSettings> jwtSettings, IUserRepository userRepo)
         {
 
             _jwtSettings = jwtSettings.Value;
+            _userRepo = userRepo;
         }
 
 
-        public string Login(UserViewModel user) 
+        public async Task<string> Login(LoginViewModel login) 
         {
 
+            var users = await _userRepo.GetAll();
 
-            if (user != null)
+            var user = users.FirstOrDefault(x => x.Email == login.Email);
+            
+
+            if (user == null)
+            {                
+                return null;                
+            }
+
+            var result = ConfirmHashAndSalt(login.Password, user.PasswordHash, user.PasswordSalt);
+
+            if (result)
             {
-                var token = GenerateToken(user);
+                var token = GenerateToken(user);                
+                return token;     
                 
-                return token;
             }
 
             return null;
         }
 
-        private string GenerateToken(UserViewModel user)
+        private string GenerateToken(User user)
         {
      
             
@@ -52,7 +67,7 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
             claims.Add(new Claim("info", user.Nome));
             claims.Add(new Claim("Info", user.Cpf));
             claims.Add(new Claim("Info", user.Email));
-            claims.Add(new Claim("role", user.RolesId.ToString()));
+            claims.Add(new Claim("role", user.Roles.ToString()));
 
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var credential = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
@@ -69,6 +84,26 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
             
+        }
+
+        private bool ConfirmHashAndSalt(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            const int hashSize = 32;
+            const int iterations = 10000;
+
+            var encrypt = new Rfc2898DeriveBytes(password, passwordSalt, iterations);
+            byte[] computedHash = encrypt.GetBytes(hashSize);
+            
+
+            for (int i = 0; i < hashSize; i++)
+            {
+                if (computedHash[i] != passwordHash[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
 

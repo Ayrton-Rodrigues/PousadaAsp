@@ -16,13 +16,9 @@ namespace Projeto.Asp.Api.PousadaAsp.Data.Mapping
             
             builder.Property(u => u.Email)
                 .IsRequired()
-                .HasColumnType("varchar(100)");
+                .HasColumnType("varchar(100)");              
             
-            builder.Property(u => u.Password)
-                .IsRequired()
-                .HasColumnType("char(8)");     
-            
-            builder.ToTable("User");
+            builder.ToTable("Users");
         }
 
 

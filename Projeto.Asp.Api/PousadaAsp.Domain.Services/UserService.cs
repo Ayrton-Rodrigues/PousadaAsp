@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 {
@@ -36,13 +37,20 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
         public async Task<bool> Add(UserViewModel entity)
         {
-
-            var user = await GetByDocument(entity.Cpf);
-            if (user != null) return false;
+            
+            var users = await GetAll();
+            
+            if(users.FirstOrDefault(x => x.Cpf == entity.Cpf || x.Email == entity.Email) != null) return false; 
+            
+            var hashSalt = CreateHashAndSalt(entity.Password);
             
             var newUser = _mapper.Map<User>(entity);
-            await _userRepository.Add(newUser);              
-            
+
+            newUser.PasswordHash = hashSalt.hash;
+
+            newUser.PasswordSalt = hashSalt.salt;
+
+            await _userRepository.Add(newUser); 
 
             return true;
         }
@@ -60,6 +68,27 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
         public void Dispose()
         {
             _userRepository?.Dispose();
+        }
+
+        public (byte[] hash, byte[] salt) CreateHashAndSalt(string password)
+        {
+            var saltSize = 16; // Define o tamanho do salt em bytes
+            var hashSize = 32; // Define o tamanho do hash em bytes
+            var iterations = 10000; // Define o número de iterações a serem usadas na derivação de chave
+
+            // Gera um salt aleatório
+            byte[] salt = new byte[saltSize];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+
+            // Deriva uma chave usando a senha e o salt
+            var cript = new Rfc2898DeriveBytes(password, salt, iterations);
+            byte[] hash = cript.GetBytes(hashSize);
+
+            return (hash, salt);
+
         }
     }
 }

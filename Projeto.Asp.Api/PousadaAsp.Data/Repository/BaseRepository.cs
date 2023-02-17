@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Projeto.Asp.Api.PousadaAsp.Data.Repository
 {
-    public class BaseRepository<TEntity, K> : IRepository<TEntity> where TEntity : BaseEntity, new()
+    public class BaseRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity, new()
     {
         protected readonly PousadaAspDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;

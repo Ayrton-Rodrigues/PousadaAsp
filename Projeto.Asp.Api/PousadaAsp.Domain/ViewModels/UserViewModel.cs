@@ -21,9 +21,9 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.ViewModels
         [StringLength(10, ErrorMessage = "O campo {0} precisa conter entre {2} e {1} caracter", MinimumLength = 6)]
         public string Password { get; set; }
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public int RolesId { get; set; }
+        public int Roles { get; set; }
 
-        public DateTime data_nascimento { get; set; }
+        public DateTime RegisterDate { get; set; }
         
         public bool Ativo { get; set; }
     }

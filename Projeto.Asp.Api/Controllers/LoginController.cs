@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Projeto.Asp.Api.PousadaAsp.Data.Context;
+using Projeto.Asp.Api.PousadaAsp.Domain.Interfaces;
 using Projeto.Asp.Api.PousadaAsp.Domain.Interfaces.IService;
 using Projeto.Asp.Api.PousadaAsp.Domain.Services;
 using Projeto.Asp.Api.PousadaAsp.Domain.ViewModels;
@@ -21,13 +22,15 @@ namespace Projeto.Asp.Api.Controllers
     public class LoginController : MainController
     {
 
+        //private readonly IUserRepository _userRepo;
         private readonly IUserService _userService;
         private readonly LoginService _loginService;
  
-
-        public LoginController(UserService service, LoginService loginService)
+//IUserRepository userRepo, 
+        public LoginController(IUserService userService, LoginService loginService)
         {
-            _userService = service;
+           // _userRepo = userRepo;
+            _userService = userService;
             _loginService = loginService;
         }
 
@@ -60,12 +63,9 @@ namespace Projeto.Asp.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginViewModel login)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);
+            if (!ModelState.IsValid) return CustomResponse(ModelState);           
 
-            var result = await _userService.GetAll();
-            var user = result.FirstOrDefault(x => x.Email == login.Email && x.Password == login.Password);
-
-            var token = _loginService.Login(user);
+            var token = await _loginService.Login(login);
 
             return CustomResponse(token);
         }

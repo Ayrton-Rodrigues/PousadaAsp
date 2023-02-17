@@ -15,6 +15,7 @@ public class JwtMiddleware
     {
         "/api/Login",
         "/api/Login/users",
+        "/api/Login/register"
 
     };
 
