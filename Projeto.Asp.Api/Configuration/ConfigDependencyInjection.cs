@@ -26,13 +26,12 @@ namespace Projeto.Asp.Api.Configuration
             services.AddSingleton(mapper);
 
             //Repository
-            services.AddScoped<IUserRepository, UserRepository>();
-            //services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
+            services.AddTransient<IUserRepository, UserRepository>();
 
             //Services
             services.AddScoped<LoginService>();
-            services.AddTransient<UserService>();
-            services.AddTransient<JwtSettings>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<JwtSettings>();
 
             return services;
         }
