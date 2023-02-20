@@ -21,8 +21,8 @@ namespace Projeto.Asp.Api.Extensions
             }
 
             // Deriva uma chave usando a senha e o salt
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            byte[] hash = pbkdf2.GetBytes(hashSize);
+            var encrypt = new Rfc2898DeriveBytes(password, salt, iterations);
+            byte[] hash = encrypt.GetBytes(hashSize);
 
             return (hash, salt);
 

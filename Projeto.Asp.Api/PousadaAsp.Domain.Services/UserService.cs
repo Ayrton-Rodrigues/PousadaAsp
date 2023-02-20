@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Security.Cryptography;
+using Projeto.Asp.Api.PousadaAsp.Domain.Validations;
+using FluentValidation;
 
 namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 {
@@ -28,20 +30,17 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
             return _mapper.Map<IEnumerable<UserViewModel>>(users);
         }
 
-        
-        public async Task<UserViewModel> GetByDocument(string cpf)
-        {
-            var user = await _userRepository.GetByDocument(cpf);
-            return _mapper.Map<UserViewModel>(user);
-        }
-
         public async Task<bool> Add(UserViewModel entity)
         {
             
             var users = await GetAll();
             
-            if(users.FirstOrDefault(x => x.Cpf == entity.Cpf || x.Email == entity.Email) != null) return false; 
-            
+            if(users.FirstOrDefault(x => x.Cpf == entity.Cpf || x.Email == entity.Email) != null) return false;
+
+            var validator = Validator(new UserValidator(), entity);
+
+            if (!validator)  return false;
+
             var hashSalt = CreateHashAndSalt(entity.Password);
             
             var newUser = _mapper.Map<User>(entity);
@@ -89,6 +88,18 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
             return (hash, salt);
 
+        }
+        
+        public bool Validator(UserValidator user, UserViewModel userVm)
+        {
+            var validator = user.Validate(userVm);
+            if (validator.IsValid) return true;
+
+            foreach(var error in validator.Errors)
+            {
+                Console.WriteLine(error.ErrorMessage);
+            }
+            return false;
         }
     }
 }

@@ -67,6 +67,7 @@ public class JwtMiddleware
                 }, out var validatedToken);
                 
                 context.Items["JwtToken"] = validatedToken;
+               
             }
             catch
             {

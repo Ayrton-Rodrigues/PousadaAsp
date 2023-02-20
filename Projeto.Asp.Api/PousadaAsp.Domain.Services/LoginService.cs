@@ -14,6 +14,7 @@ using Projeto.Asp.Api.PousadaAsp.Domain.Enums;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using Projeto.Asp.Api.PousadaAsp.Domain.Entity;
+using Microsoft.AspNetCore.Http;
 
 namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 {
@@ -23,17 +24,23 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
         private readonly JwtSettings _jwtSettings;
         private readonly IUserRepository _userRepo;
+        private readonly IHttpContextAccessor _accessor;
+
+
 
         public LoginService(IOptions<JwtSettings> jwtSettings, IUserRepository userRepo)
         {
 
             _jwtSettings = jwtSettings.Value;
             _userRepo = userRepo;
+ 
         }
 
 
         public async Task<string> Login(LoginViewModel login) 
         {
+
+            
 
             var users = await _userRepo.GetAll();
 
@@ -49,38 +56,38 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
             if (result)
             {
-                var token = GenerateToken(user);                
+                var token = GenerateToken(user);
+
                 return token;     
                 
             }
+
 
             return null;
         }
 
         private string GenerateToken(User user)
         {
-     
             
-            var claims = new List<Claim>();
-            
+            var claims = new List<Claim>();            
 
-            claims.Add(new Claim("info", user.Nome));
-            claims.Add(new Claim("Info", user.Cpf));
-            claims.Add(new Claim("Info", user.Email));
-            claims.Add(new Claim("role", user.Roles.ToString()));
+            claims.Add(new Claim("Nome", user.Nome));
+            claims.Add(new Claim("Document", user.Cpf));
+            claims.Add(new Claim("Email", user.Email));
+            claims.Add(new Claim(ClaimTypes.Role.Split('/').Last(), user.Roles.ToString()));
 
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var credential = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
-            
+
             var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Emissor,
-                audience: _jwtSettings.ValidoEm,                
+                audience: _jwtSettings.ValidoEm,
                 claims: claims,
                 expires: DateTime.Now.AddDays(7),
                 signingCredentials: credential
             );
 
-                
+
 
             return new JwtSecurityTokenHandler().WriteToken(token);
             

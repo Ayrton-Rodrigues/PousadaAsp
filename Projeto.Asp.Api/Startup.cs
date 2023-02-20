@@ -49,11 +49,11 @@ namespace Projeto.Asp.Api
             app.UseRouting();
             
             
+            app.UseMiddleware<JwtMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
             
             
-            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
