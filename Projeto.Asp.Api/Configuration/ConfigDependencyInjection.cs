@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using DevIO.Api.Extensions;
+using KissLog;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Projeto.Asp.Api.PousadaAsp.Data.Context;
 using Projeto.Asp.Api.PousadaAsp.Data.Repository;
@@ -26,12 +29,20 @@ namespace Projeto.Asp.Api.Configuration
 
             //Repository
             services.AddScoped<IUserRepository, UserRepository>();
-            //services.AddScoped(typeof(IRepository<,>), typeof(BaseRepository<,>));
 
             //Services
-            services.AddTransient<UserService>();
-
+            services.AddScoped<LoginService>();
+            services.AddScoped<IUserService, UserService>();
             
+            //AppSettings
+            services.AddScoped<JwtSettings>();
+
+            //Logger
+            services.AddScoped<IKLogger>((provider) => Logger.Factory.Get());
+
+            //User
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             return services;
         }
     }

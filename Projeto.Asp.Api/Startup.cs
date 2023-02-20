@@ -29,6 +29,7 @@ namespace Projeto.Asp.Api
             services.AddApiConfiguration();
             services.AddConfigurationDbContext(Configuration);
             services.AddDependencyInjectionConfig();
+            services.AddConfigJwt(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,16 +40,26 @@ namespace Projeto.Asp.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            
+            
+            
             app.UseHttpsRedirection();
 
+            
             app.UseRouting();
-
+            
+            
+            app.UseMiddleware<JwtMiddleware>();
+            app.UseAuthentication();
             app.UseAuthorization();
+            
+            
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

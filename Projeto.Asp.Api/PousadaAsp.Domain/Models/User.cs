@@ -9,17 +9,17 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Entity
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Cpf { get; set; }
-        public string Password { get; set; }
-        public int RolesId { get; set; }
-
-        public DateTime data_nascimento { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public DateTime RegisterDate { get; set; }
+        public int Roles { get; set; }
 
         public bool Ativo { get; set; }
 
-
-    }   
+ 
+    } 
 
     
-    }
+}
 
    
