@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Projeto.Asp.Api.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,10 @@ namespace Projeto.Asp.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddApiConfiguration();
+            services.AddConfigurationDbContext(Configuration);
+            services.AddDependencyInjectionConfig();
+            services.AddConfigJwt(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,16 +40,26 @@ namespace Projeto.Asp.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            
+            
+            
             app.UseHttpsRedirection();
 
+            
             app.UseRouting();
-
+            
+            
+            app.UseMiddleware<JwtMiddleware>();
+            app.UseAuthentication();
             app.UseAuthorization();
+            
+            
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
