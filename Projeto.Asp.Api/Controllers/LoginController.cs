@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Projeto.Asp.Api.PousadaAsp.Data.Context;
 using Projeto.Asp.Api.PousadaAsp.Domain.Interfaces.IService;
@@ -23,12 +24,13 @@ namespace Projeto.Asp.Api.Controllers
 
         private readonly LoginService _loginService;
         private readonly IUserService _userService;
- 
+        private readonly ILogger<LoginController> _logger;
 
-        public LoginController(IUserService userService, LoginService loginService)
+        public LoginController(IUserService userService, LoginService loginService, ILogger<LoginController> logger)
         {
             _userService = userService;
             _loginService = loginService;
+            _logger = logger;
         }
 
 
@@ -50,11 +52,20 @@ namespace Projeto.Asp.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginViewModel login)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);           
+            try
+            {
+                if (!ModelState.IsValid) return CustomResponse(ModelState);           
 
-            var token = await _loginService.Login(login);
+                var token = await _loginService.Login(login);
+           
+                return CustomResponse(token);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return CustomResponse();
+            }
 
-            return CustomResponse(token);
         }
 
 

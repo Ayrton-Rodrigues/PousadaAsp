@@ -1,3 +1,7 @@
+using KissLog;
+using KissLog.AspNetCore;
+using KissLog.CloudListeners.Auth;
+using KissLog.CloudListeners.RequestLogsListener;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +34,8 @@ namespace Projeto.Asp.Api
             services.AddConfigurationDbContext(Configuration);
             services.AddDependencyInjectionConfig();
             services.AddConfigJwt(Configuration);
+            services.AddConfigKissLog();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,13 +44,10 @@ namespace Projeto.Asp.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-
-            
+            }         
             
             
             app.UseHttpsRedirection();
-
             
             app.UseRouting();
             
@@ -52,8 +55,9 @@ namespace Projeto.Asp.Api
             app.UseMiddleware<JwtMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
-            
-            
+
+            app.AddConfigKissLogBuilder(Configuration);
+
 
             app.UseEndpoints(endpoints =>
             {
@@ -61,5 +65,7 @@ namespace Projeto.Asp.Api
             });
 
         }
+
+
     }
 }
