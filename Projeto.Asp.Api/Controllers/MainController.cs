@@ -24,7 +24,7 @@ namespace Projeto.Asp.Api.Controllers
         protected ActionResult CustomResponse(object obj = null)
         {
             
-            if(_hasErrors)
+            if(_hasErrors || obj == null)
             {
                 return BadRequest(new {
                     success = false,
