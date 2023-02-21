@@ -23,10 +23,7 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
 
         private readonly JwtSettings _jwtSettings;
-        private readonly IUserRepository _userRepo;
-        private readonly IHttpContextAccessor _accessor;
-
-
+        private readonly IUserRepository _userRepo; 
 
         public LoginService(IOptions<JwtSettings> jwtSettings, IUserRepository userRepo)
         {
