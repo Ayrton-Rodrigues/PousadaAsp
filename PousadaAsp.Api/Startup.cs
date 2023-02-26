@@ -34,6 +34,7 @@ namespace Projeto.Asp.Api
             services.AddConfigurationDbContext(Configuration);
             services.AddDependencyInjectionConfig();
             services.AddConfigJwt(Configuration);
+            services.AddConfigSwagger();
             services.AddConfigKissLog();
             
         }
@@ -54,10 +55,11 @@ namespace Projeto.Asp.Api
             
             app.UseMiddleware<JwtMiddleware>();
             app.UseAuthentication();
-            app.UseAuthorization();
-
+            app.UseAuthorization();           
+            
             app.AddConfigKissLogBuilder(Configuration);
-
+            
+            app.AddConfigSwagger();
 
             app.UseEndpoints(endpoints =>
             {
