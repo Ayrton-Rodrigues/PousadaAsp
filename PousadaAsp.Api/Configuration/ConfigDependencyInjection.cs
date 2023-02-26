@@ -7,7 +7,7 @@ using PousadaAsp.Data.Repository;
 using PousadaAsp.Domain.Interfaces;
 using PousadaAsp.Domain.Interfaces.IService;
 using PousadaAsp.Domain.Services;
-using PousadaAsp.Services.Extensions;
+using PousadaAsp.Domain.Utils;
 
 namespace PousadaAsp.Api.Configuration
 {
@@ -42,6 +42,9 @@ namespace PousadaAsp.Api.Configuration
 
             //User
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //Notifier
+            services.AddScoped<INotifier, NotifierService>();
 
             return services;
         }

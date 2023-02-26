@@ -26,7 +26,7 @@ namespace PousadaAsp.Api.Controllers
         private readonly IUserService _userService;
         private readonly ILogger<LoginController> _logger;
 
-        public LoginController(IUserService userService, LoginService loginService, ILogger<LoginController> logger)
+        public LoginController(IUserService userService, LoginService loginService, ILogger<LoginController> logger, INotifier notifier) : base(notifier)
         {
             _userService = userService;
             _loginService = loginService;
@@ -43,9 +43,8 @@ namespace PousadaAsp.Api.Controllers
 
             if (!result) return CustomResponse();
 
-            register.Password = "";
-            
-            return CustomResponse(register);
+         
+            return CustomResponse("Usuário criado");
         }
 
 
@@ -62,8 +61,8 @@ namespace PousadaAsp.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return CustomResponse();
+               
+                return CustomResponse(ex);
             }
 
         }

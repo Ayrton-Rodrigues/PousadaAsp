@@ -11,10 +11,12 @@ namespace PousadaAsp.Domain.Entity
         public string Cpf { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-        public DateTime RegisterDate { get; set; }
+        public DateTime DataRegistro { get; set; }
         public int Roles { get; set; }
 
         public bool Ativo { get; set; }
+
+        public string Telefone {get; set;}
 
  
     } 
