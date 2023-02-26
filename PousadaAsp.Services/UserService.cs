@@ -45,6 +45,8 @@ namespace PousadaAsp.Domain.Services
             
             var newUser = _mapper.Map<User>(entity);
 
+            newUser.DataRegistro = DateTime.Now;
+
             newUser.PasswordHash = hashSalt.hash;
 
             newUser.PasswordSalt = hashSalt.salt;
