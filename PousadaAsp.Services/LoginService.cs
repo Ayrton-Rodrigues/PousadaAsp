@@ -13,22 +13,21 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
-using PousadaAsp.Services.Extensions;
+using PousadaAsp.Domain.Utils;
+using PousadaAsp.Domain.Services;
 
 namespace PousadaAsp.Domain.Services
 {
-    public class LoginService
+    public class LoginService : BaseService
     {
 
         private readonly JwtSettings _jwtSettings;
-        private readonly IUserRepository _userRepo; 
+        private readonly IUserRepository _userRepo;
 
-        public LoginService(IOptions<JwtSettings> jwtSettings, IUserRepository userRepo)
+        public LoginService(IOptions<JwtSettings> jwtSettings, IUserRepository userRepo, INotifier notifier) : base(notifier)
         {
-
             _jwtSettings = jwtSettings.Value;
-            _userRepo = userRepo;
- 
+            _userRepo = userRepo; 
         }
 
         public async Task<string> Login(LoginViewModel login) 
@@ -39,7 +38,8 @@ namespace PousadaAsp.Domain.Services
             var user = users.FirstOrDefault(x => x.Email == login.Email);            
 
             if (user == null)
-            {                
+            {
+                Notifier("Usuário não encontrado!");
                 return null;                
             }
 

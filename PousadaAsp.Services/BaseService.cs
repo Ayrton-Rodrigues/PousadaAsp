@@ -2,10 +2,17 @@
 using PousadaAsp.Domain.Entity;
 using PousadaAsp.Domain.Interfaces.IService;
 
-namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
+namespace PousadaAsp.Domain.Services
 {
     public class BaseService
     {
+        private readonly INotifier _notifier;
+        
+        public BaseService(INotifier notifier)
+        {
+            _notifier = notifier;
+        }
+        
         protected bool ExecutarValidacao<TV, TE>(TV validacao, TE entidade) where TV : AbstractValidator<TE> where TE : BaseEntity
         {
             var validator = validacao.Validate(entidade);
@@ -14,5 +21,13 @@ namespace Projeto.Asp.Api.PousadaAsp.Domain.Services
 
             return false;
         }
+   
+        protected void Notifier(string message)
+        {
+            _notifier.Handle(message);
+        }
+
     }
+
+   
 }
