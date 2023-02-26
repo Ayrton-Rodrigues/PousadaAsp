@@ -15,7 +15,8 @@ public class JwtMiddleware
     {
         "/api/Login",
         "/api/Login/users",
-        "/api/Login/register"
+        "/api/Login/register",
+        "/swagger", "/swagger/v1/swagger.json", "/favicon.ico", "/swagger/index.html"
 
     };
 
