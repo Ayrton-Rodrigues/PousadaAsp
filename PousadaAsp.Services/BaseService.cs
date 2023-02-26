@@ -22,7 +22,7 @@ namespace PousadaAsp.Domain.Services
             return false;
         }
    
-        protected void Notifier(string message)
+        protected void NotifyError(string message)
         {
             _notifier.Handle(message);
         }

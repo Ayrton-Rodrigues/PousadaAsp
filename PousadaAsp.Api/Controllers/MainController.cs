@@ -30,19 +30,19 @@ namespace PousadaAsp.Api.Controllers
         protected ActionResult CustomResponse(object obj = null)
         {
             
-            if(HasNotification() || obj == null)
+            if(HasNotification())
             {
+                return Ok(new
+                {
+                    success = true,
+                    data = obj
+                });
+            }
+
                 return BadRequest(new {
                     success = false,
                     errors = _notifier.GetNotification()
                 });
-            }
-
-            return Ok(new
-            {
-                success = true,
-                data = obj
-            });
         
         }
 
@@ -55,11 +55,16 @@ namespace PousadaAsp.Api.Controllers
                 foreach(var error in errors)
                 {
                     var errorMessage = error.Exception == null ? error.ErrorMessage : error.Exception.Message;
-                    _notifier.Handle(error.ErrorMessage);
+                    NotifyError(error.ErrorMessage);
                 }
                 
             }         
 
+        }
+
+        protected void NotifyError(string message)
+        {
+            _notifier.Handle(message);
         }
 
         private bool HasNotification()

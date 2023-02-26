@@ -13,12 +13,12 @@ using FluentValidation;
 
 namespace PousadaAsp.Domain.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService, IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, INotifier notifier) : base(notifier)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -32,17 +32,21 @@ namespace PousadaAsp.Domain.Services
 
         public async Task<bool> Add(UserViewModel entity)
         {
-            
+
             var users = await GetAll();
-            
-            if(users.FirstOrDefault(x => x.Cpf == entity.Cpf || x.Email == entity.Email) != null) return false;
+
+            if (users.FirstOrDefault(x => x.Cpf == entity.Cpf || x.Email == entity.Email) != null)
+            {
+                NotifyError("Já existe um usuário com o CPF ou Email informado!");
+                return false;
+            }
 
             var validator = Validator(new UserValidator(), entity);
 
-            if (!validator)  return false;
+            if (!validator) return false;
 
             var hashSalt = CreateHashAndSalt(entity.Password);
-            
+
             var newUser = _mapper.Map<User>(entity);
 
             newUser.DataRegistro = DateTime.Now;
@@ -51,7 +55,7 @@ namespace PousadaAsp.Domain.Services
 
             newUser.PasswordSalt = hashSalt.salt;
 
-            await _userRepository.Add(newUser); 
+            await _userRepository.Add(newUser);
 
             return true;
         }
@@ -76,7 +80,7 @@ namespace PousadaAsp.Domain.Services
             var saltSize = 16; // tamanho do salt em bytes
             var hashSize = 32; // tamanho do hash em bytes
             var iterations = 10000; // Informa quantas iterações serão usadas para modificar a chave
-         
+
             byte[] salt = new byte[saltSize]; // Salt aleatório
             using (var rng = RandomNumberGenerator.Create())
             {
@@ -90,15 +94,15 @@ namespace PousadaAsp.Domain.Services
             return (hash, salt);
 
         }
-        
+
         public bool Validator(UserValidator user, UserViewModel userVm)
         {
             var validator = user.Validate(userVm);
             if (validator.IsValid) return true;
 
-            foreach(var error in validator.Errors)
+            foreach (var error in validator.Errors)
             {
-                Console.WriteLine(error.ErrorMessage);
+                NotifyError(error.ErrorMessage);
             }
             return false;
         }

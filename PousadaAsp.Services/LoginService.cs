@@ -39,7 +39,7 @@ namespace PousadaAsp.Domain.Services
 
             if (user == null)
             {
-                Notifier("Usuário não encontrado!");
+                NotifyError("Usuário não encontrado!");
                 return null;                
             }
 
