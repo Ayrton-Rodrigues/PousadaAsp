@@ -21,7 +21,33 @@ namespace PousadaAsp.Api.Configuration
                     Contact = new OpenApiContact() { Name = "PousadaAsp Admin", Email = "contato@pousadaAsp.com" },
                     License = new OpenApiLicense() { Name = "ASP", Url = new Uri("https://github.com") }
                 });
-                
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Insira o token JWT desta maneira: Bearer token",
+                    Name = "Authorization",
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });                
+
+
             });
 
             return services;
