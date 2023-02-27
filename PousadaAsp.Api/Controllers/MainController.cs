@@ -12,8 +12,6 @@ namespace PousadaAsp.Api.Controllers
     {
 
         private readonly INotifier _notifier;
-        private bool _hasErrors { get; set; }
-        private readonly List<string> _errorsMessage = new List<string>();
 
         protected MainController(INotifier notifier)
         {
@@ -30,7 +28,7 @@ namespace PousadaAsp.Api.Controllers
         protected ActionResult CustomResponse(object obj = null)
         {
             
-            if(HasNotification())
+            if(!HasNotification())
             {
                 return Ok(new
                 {
